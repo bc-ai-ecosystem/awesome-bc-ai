@@ -27,6 +27,8 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
   const [isGenerated, setIsGenerated] = useState(false);
   const [projectDirName, setProjectDirName] = useState('');
   const [copied, setCopied] = useState(false);
+  const [generatedMarkdown, setGeneratedMarkdown] = useState('');
+  const [copiedMd, setCopiedMd] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(`${projectDirName}/index.md`);
@@ -83,6 +85,8 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
     
     md += `---\n\n`;
     md += formData.body;
+
+    setGeneratedMarkdown(md);
 
     // Create Blob
     const blob = new Blob([md], { type: 'text/markdown' });
@@ -180,7 +184,25 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
                 {copied && <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded shadow">Copied!</span>}
               </button>
             </li>
-            <li>Paste the contents of your downloaded <code>index.md</code> file into the editor.</li>
+            <li>
+              <div className="flex items-center flex-wrap gap-3 mt-1 mb-2">
+                <span>Paste the contents of your downloaded <code>index.md</code> file into the editor.</span>
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(generatedMarkdown);
+                    setCopiedMd(true);
+                    setTimeout(() => setCopiedMd(false), 2000);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700 shadow-sm text-sm"
+                >
+                  {copiedMd ? (
+                    <><svg className="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> Copied Markdown!</>
+                  ) : (
+                    <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> Copy Markdown File Contents</>
+                  )}
+                </button>
+              </div>
+            </li>
             {imageFile && (
               <li>Click <strong>Commit changes</strong>, then upload your image file <code>{imageFile.name}</code> into the newly created <code>{projectDirName}</code> folder.</li>
             )}
