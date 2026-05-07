@@ -8,6 +8,7 @@ demo_url: "https://bc-ai-ecosystem.github.io/awesome-bc-ai/"
 category: "Ecosystem Tooling & Infra"
 tags: ["website"]
 image: "./Awesome BC + AI.png"
+project_start_date: "2026-05-02"
 ---
 
 Welcome to the official **BC + AI Ecosystem Directory**! This platform serves as a living, community-driven archive for discovering the incredible projects, tools, and research being built across British Columbia.

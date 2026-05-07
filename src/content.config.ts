@@ -10,6 +10,9 @@ const projectCollection = defineCollection({
     author_github: z.string().regex(/^@?[a-zA-Z0-9-]+$/, "Must be a valid GitHub handle").optional(),
     github_repo: z.string().url("Must be a valid URL").optional(),
     demo_url: z.string().url().optional(),
+    video_url: z.string().url("Must be a valid URL").optional(),
+    project_start_date: z.string().optional(),
+    project_end_date: z.string().optional(),
     category: z.enum([
       'Hackathons & Sprints',
       'Open Data & Community Archives',

@@ -37,16 +37,42 @@ const getTextColor = (category: string) => {
 
 const accentClass = getAccentClass(project.data.category);
 const textColor = getTextColor(project.data.category);
+
+const getEmbedUrl = (url: string) => {
+  if (!url) return null;
+  if (url.includes('youtube.com/watch?v=')) {
+    return url.replace('watch?v=', 'embed/');
+  }
+  if (url.includes('youtu.be/')) {
+    return url.replace('youtu.be/', 'youtube.com/embed/');
+  }
+  if (url.includes('vimeo.com/')) {
+    const videoId = url.split('vimeo.com/')[1];
+    return `https://player.vimeo.com/video/${videoId}`;
+  }
+  return url;
+};
+
+const videoUrl = project.data.video_url ? getEmbedUrl(project.data.video_url) : null;
+const isMp4 = videoUrl?.endsWith('.mp4');
 ---
 
 <Layout title={project.data.title} category={project.data.category}>
 	<div class="max-w-4xl mx-auto">
 		<header class="mb-12">
-      <div class="flex items-center gap-4 mb-6">
+      <div class="flex items-center flex-wrap gap-4 mb-6">
         <a href={`${import.meta.env.BASE_URL}directory`} class="text-sm text-slate-400 hover:text-white transition-colors">&larr; Back to Directory</a>
         <span class={`px-3 py-1 text-xs font-semibold rounded-full border ${accentClass}`}>
           {project.data.category}
         </span>
+        {(project.data.project_start_date || project.data.project_end_date) && (
+          <div class="text-sm text-slate-400 flex items-center gap-1.5 md:ml-auto">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <span class="date-relative" data-start={project.data.project_start_date} data-end={project.data.project_end_date}>
+              {project.data.project_start_date || '...'} {project.data.project_end_date ? `to ${project.data.project_end_date}` : ''}
+            </span>
+          </div>
+        )}
       </div>
 
 			<h1 class={`text-4xl md:text-5xl font-bold font-display tracking-tight mb-4 ${textColor}`}>
@@ -103,6 +129,18 @@ const textColor = getTextColor(project.data.category);
       {project.data.image && (
         <Image src={project.data.image} alt={project.data.title} class="w-full h-auto rounded-xl mt-8 mb-12 shadow-lg border border-slate-700" />
       )}
+      
+      {videoUrl && (
+        <div class="mb-12 rounded-xl overflow-hidden shadow-lg border border-slate-700">
+          {isMp4 ? (
+            <video controls class="w-full h-auto" src={videoUrl}></video>
+          ) : (
+            <div class="aspect-video w-full">
+              <iframe src={videoUrl} class="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          )}
+        </div>
+      )}
 			<Content />
 		</article>
 
@@ -131,3 +169,42 @@ const textColor = getTextColor(project.data.category);
     </footer>
 	</div>
 </Layout>
+
+<script>
+  import dayjs from 'dayjs';
+  import relativeTime from 'dayjs/plugin/relativeTime';
+  import advancedFormat from 'dayjs/plugin/advancedFormat';
+
+  dayjs.extend(relativeTime);
+  dayjs.extend(advancedFormat);
+
+  const dateElements = document.querySelectorAll('.date-relative');
+  dateElements.forEach(el => {
+    const startStr = el.getAttribute('data-start');
+    const endStr = el.getAttribute('data-end');
+    
+    let relativeText = '';
+    let titleText = '';
+
+    if (startStr && endStr) {
+      const start = dayjs(startStr);
+      const end = dayjs(endStr);
+      relativeText = `${start.fromNow()} to ${end.fromNow()}`;
+      titleText = `${start.format('dddd, MMMM Do, YYYY')} - ${end.format('dddd, MMMM Do, YYYY')}`;
+    } else if (startStr) {
+      const start = dayjs(startStr);
+      relativeText = `Started ${start.fromNow()}`;
+      titleText = start.format('dddd, MMMM Do, YYYY');
+    } else if (endStr) {
+      const end = dayjs(endStr);
+      relativeText = `Ended ${end.fromNow()}`;
+      titleText = end.format('dddd, MMMM Do, YYYY');
+    }
+
+    if (relativeText) {
+      el.textContent = relativeText;
+      el.setAttribute('title', titleText);
+      el.classList.add('cursor-help', 'underline', 'decoration-dotted', 'underline-offset-4');
+    }
+  });
+</script>

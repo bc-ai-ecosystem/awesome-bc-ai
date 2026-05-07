@@ -14,6 +14,9 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
     author_github: '',
     github_repo: '',
     demo_url: '',
+    video_url: '',
+    project_start_date: '',
+    project_end_date: '',
     category: 'Hackathons & Sprints',
     body: ''
   });
@@ -71,6 +74,9 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
     if (formData.author_github) md += `author_github: "${formData.author_github}"\n`;
     if (formData.github_repo) md += `github_repo: "${formData.github_repo}"\n`;
     if (formData.demo_url) md += `demo_url: "${formData.demo_url}"\n`;
+    if (formData.video_url) md += `video_url: "${formData.video_url}"\n`;
+    if (formData.project_start_date) md += `project_start_date: "${formData.project_start_date}"\n`;
+    if (formData.project_end_date) md += `project_end_date: "${formData.project_end_date}"\n`;
     
     md += `category: "${formData.category}"\n`;
     md += `tags: [${tagsArray.join(', ')}]\n`;
@@ -250,6 +256,13 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
               <img src={imagePreviewUrl} alt="Preview" className="w-full h-48 object-cover rounded-lg mb-4 border border-slate-700" />
             )}
             
+            {formData.video_url && (
+               <div className="w-full aspect-video bg-slate-900 rounded-lg border border-slate-700 mb-4 flex flex-col items-center justify-center text-slate-500">
+                 <svg className="w-8 h-8 opacity-50 mb-2" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                 <span className="text-xs">Video Embed Preview</span>
+               </div>
+            )}
+            
             <div className="flex items-center gap-3 mb-4 mt-2">
               {formData.author_github ? (
                 <img 
@@ -273,6 +286,13 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
             
             <h3 className="text-xl font-bold text-white mb-2">{formData.title || 'Project Title'}</h3>
             <span className={`inline-block text-xs font-semibold mb-3 ${getAccentClass(formData.category).split(' ')[0]}`}>{formData.category}</span>
+            
+            {(formData.project_start_date || formData.project_end_date) && (
+              <div className="text-xs text-slate-400 mb-3 flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                {formData.project_start_date || '...'} {formData.project_end_date ? `to ${formData.project_end_date}` : ''}
+              </div>
+            )}
             
             <p className="text-slate-400 text-sm line-clamp-3 mb-6 flex-grow">{formData.description || 'Your project description will appear here...'}</p>
             
@@ -371,6 +391,38 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
                 className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="project_start_date" className="block text-sm font-medium text-slate-300 mb-1">Start Date</label>
+              <input 
+                type="date" 
+                id="project_start_date" name="project_start_date"
+                value={formData.project_start_date} onChange={handleChange}
+                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all [color-scheme:dark]"
+              />
+            </div>
+            <div>
+              <label htmlFor="project_end_date" className="block text-sm font-medium text-slate-300 mb-1">End Date</label>
+              <input 
+                type="date" 
+                id="project_end_date" name="project_end_date"
+                value={formData.project_end_date} onChange={handleChange}
+                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all [color-scheme:dark]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="video_url" className="block text-sm font-medium text-slate-300 mb-1">Video URL (YouTube, Vimeo, MP4)</label>
+            <input 
+              type="url" 
+              id="video_url" name="video_url"
+              value={formData.video_url} onChange={handleChange}
+              placeholder="https://youtube.com/watch?v=..."
+              className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

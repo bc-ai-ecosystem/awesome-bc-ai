@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
+import ProjectCard from '../components/ProjectCard';
 
 const projects = await getCollection('projects');
 
@@ -64,43 +65,9 @@ const categories = [
 					
 					<div class="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory scrollbar-hide" style="scrollbar-width: none;">
 						{categoryProjects.map(project => (
-							<a href={`${import.meta.env.BASE_URL}projects/${project.id}`} class="snap-start flex-none w-[300px] md:w-[400px] group block">
-								<div class={`h-full border border-slate-800 bg-slate-800/40 rounded-xl overflow-hidden backdrop-blur-sm transition-all duration-300 hover:bg-slate-800 hover:-translate-y-1 hover:shadow-lg flex flex-col ${category.accent.replace('text-', 'hover:border-').replace('text-', 'hover:shadow-')}`}>
-									{project.data.image && (
-										<div class="h-32 w-full shrink-0 border-b border-slate-800/50 overflow-hidden">
-											<Image src={project.data.image} alt={project.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-										</div>
-									)}
-									<div class="p-6 flex flex-col flex-grow">
-										<div class="flex items-center gap-3 mb-4">
-											{project.data.author_github ? (
-												<img 
-													src={`https://github.com/${project.data.author_github.replace('@', '')}.png`} 
-													alt={project.data.author_github} 
-													class="w-10 h-10 rounded-full border border-slate-700"
-												/>
-											) : (
-												<div class="w-10 h-10 rounded-full border border-slate-700 bg-slate-700 flex items-center justify-center text-slate-300 font-bold">
-													{project.data.author_name.charAt(0).toUpperCase()}
-												</div>
-											)}
-											<div class="text-sm">
-												<p class="text-slate-300 font-medium">{project.data.author_name}</p>
-												{project.data.author_github && (
-													<p class="text-slate-500 text-xs">@{project.data.author_github.replace('@', '')}</p>
-												)}
-											</div>
-										</div>
-										<h3 class="text-xl font-bold text-white mb-2 group-hover:text-brand-primary transition-colors">{project.data.title}</h3>
-										<p class="text-slate-400 text-sm line-clamp-3 mb-6 flex-grow">{project.data.description}</p>
-										<div class="mt-auto flex flex-wrap gap-2">
-											{project.data.tags.map(tag => (
-												<span class="px-2 py-1 text-xs rounded bg-slate-700/50 text-slate-300">#{tag}</span>
-											))}
-										</div>
-									</div>
-								</div>
-							</a>
+							<div class="snap-start flex-none w-[300px] md:w-[400px]">
+								<ProjectCard client:visible project={project} compact={false} />
+							</div>
 						))}
 					</div>
 				</section>
