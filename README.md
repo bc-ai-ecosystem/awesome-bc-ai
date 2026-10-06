@@ -1,3 +1,5 @@
+> **Copied 2026-10-05.** A snapshot of this repo now lives in the kk-kb monorepo at [`content/projects/02-bc-ai-ecosystem-nonprofit/publishing/awesome-bc-ai/`](https://github.com/WalksWithASwagger/kk-kb/tree/main/content/projects/02-bc-ai-ecosystem-nonprofit/publishing/awesome-bc-ai) (source commit `6ddf5ce76d14`), earmarked as source content for the bc-ai.ca redesign. This repo and its GitHub Pages site stay live for now; see PROVENANCE.md there.
+
 # BC + AI Ecosystem
 
 A community-driven directory for the BC + AI Ecosystem. We are British Columbia's grassroots AI collective. We believe in DIY over gatekeepers, community before clout, and building a future where artificial intelligence serves culture, creativity, and the planet.
