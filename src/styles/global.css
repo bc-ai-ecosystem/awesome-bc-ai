@@ -2,18 +2,49 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
-  
-  --color-brand-primary: #a3e635;
-  --color-accent-creative: #06b6d4;
-  --color-accent-ethical: #10b981;
-  --color-accent-tooling: #f97316;
+  /* BC + AI editorial identity: paper, navy ink, restrained chartreuse */
+  --color-paper: #f7f2e7;
+  --color-paper-deep: #efe7d3;
+  --color-card: #fffdf6;
+  --color-ink: #0d1b2e;
+  --color-ink-soft: #3d4c63;
+  --color-navy: #10243e;
+  --color-navy-deep: #0a1830;
+  --color-chartreuse: #c9f158;
+  --color-chartreuse-ink: #5c7a0e;
+
+  /* Category accents (readable on paper) */
+  --color-cat-hack: #65a30d;
+  --color-cat-data: #0f766e;
+  --color-cat-tool: #c2410c;
+  --color-cat-creative: #6d28d9;
+  --color-cat-learn: #b45309;
+
+  /* Legacy names kept so older components keep working */
+  --color-brand-primary: #65a30d;
+  --color-accent-creative: #6d28d9;
+  --color-accent-ethical: #0f766e;
+  --color-accent-tooling: #c2410c;
+
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", ui-sans-system, system-ui, sans-serif;
 }
 
 body {
-  @apply bg-slate-900 text-slate-100 font-sans antialiased;
+  @apply bg-paper text-ink font-sans antialiased;
+  background-image: radial-gradient(circle at 1px 1px, rgba(13, 27, 46, 0.07) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+/* Hard offset "print" shadow used on cards and buttons */
+.shadow-print {
+  box-shadow: 5px 5px 0 0 var(--color-ink);
+}
+.shadow-print-sm {
+  box-shadow: 3px 3px 0 0 var(--color-ink);
+}
+.shadow-print-lg {
+  box-shadow: 8px 8px 0 0 var(--color-ink);
 }
 
 /* Ensure react-select screen reader text stays hidden even if Emotion styles drop during view transitions */

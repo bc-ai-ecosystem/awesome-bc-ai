@@ -117,35 +117,35 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
   const customSelectStyles = {
     control: (base: any, state: any) => ({
       ...base,
-      backgroundColor: 'rgba(15, 23, 42, 0.5)',
-      borderColor: state.isFocused ? '#a3e635' : '#334155',
-      color: 'white',
+      backgroundColor: '#fffdf6',
+      borderColor: state.isFocused ? '#0d1b2e' : 'rgba(13,27,46,0.4)',
+      color: '#0d1b2e',
       borderRadius: '0.5rem',
       padding: '2px',
-      boxShadow: state.isFocused ? '0 0 0 1px #a3e635' : 'none',
-      '&:hover': { borderColor: '#a3e635' }
+      boxShadow: state.isFocused ? '0 0 0 1px #0d1b2e' : 'none',
+      '&:hover': { borderColor: '#0d1b2e' }
     }),
     menu: (base: any) => ({
       ...base,
-      backgroundColor: '#1e293b',
-      border: '1px solid #334155',
+      backgroundColor: '#fffdf6',
+      border: '1px solid rgba(13,27,46,0.3)',
       zIndex: 50
     }),
     option: (base: any, state: any) => ({
       ...base,
-      backgroundColor: state.isFocused ? '#334155' : 'transparent',
-      color: 'white',
-      '&:active': { backgroundColor: '#475569' }
+      backgroundColor: state.isFocused ? '#efe7d3' : 'transparent',
+      color: '#0d1b2e',
+      '&:active': { backgroundColor: '#e3d9c2' }
     }),
-    singleValue: (base: any) => ({ ...base, color: 'white' }),
-    multiValue: (base: any) => ({ ...base, backgroundColor: '#334155', borderRadius: '4px' }),
-    multiValueLabel: (base: any) => ({ ...base, color: '#e2e8f0' }),
+    singleValue: (base: any) => ({ ...base, color: '#0d1b2e' }),
+    multiValue: (base: any) => ({ ...base, backgroundColor: '#efe7d3', borderRadius: '4px' }),
+    multiValueLabel: (base: any) => ({ ...base, color: '#0d1b2e' }),
     multiValueRemove: (base: any) => ({
       ...base,
-      color: '#94a3b8',
+      color: '#3d4c63',
       ':hover': { backgroundColor: '#ef4444', color: 'white' },
     }),
-    input: (base: any) => ({ ...base, color: 'white' }),
+    input: (base: any) => ({ ...base, color: '#0d1b2e' }),
   };
 
   const getAccentClass = (category: string) => {
@@ -154,32 +154,33 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
       case 'Creative & Physical Modalities': return 'text-accent-creative border-accent-creative';
       case 'Open Data & Community Archives': return 'text-accent-ethical border-accent-ethical';
       case 'Ecosystem Tooling & Infra': return 'text-accent-tooling border-accent-tooling';
-      default: return 'text-slate-400 border-slate-700';
+      case 'Learning & Research': return 'text-cat-learn border-cat-learn';
+      default: return 'text-ink-soft border-ink/30';
     }
   };
 
   if (isGenerated) {
     return (
-      <div className="max-w-2xl mx-auto p-8 rounded-xl border border-brand-primary bg-brand-primary/5 text-center">
-        <div className="w-16 h-16 bg-brand-primary text-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="max-w-2xl mx-auto p-8 rounded-xl border-2 border-ink bg-card shadow-print text-center">
+        <div className="w-16 h-16 bg-ink text-chartreuse rounded-full flex items-center justify-center mx-auto mb-6">
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
         </div>
-        <h2 className="text-3xl font-bold font-display text-white mb-4">File Generated!</h2>
-        <p className="text-slate-300 mb-6">
-          Your project file <strong className="text-white">index.md</strong> has been downloaded to your computer.
+        <h2 className="text-3xl font-bold font-display text-ink mb-4">File Generated!</h2>
+        <p className="text-ink-soft mb-6">
+          Your project file <strong className="text-ink">index.md</strong> has been downloaded to your computer.
         </p>
         
-        <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 mb-8 text-left">
-          <h3 className="font-semibold text-white mb-3">Next Steps:</h3>
-          <ol className="list-decimal list-inside text-slate-400 space-y-3">
-            <li>Go to the <a href="https://github.com/bc-ai-ecosystem/awesome-bc-ai/tree/main/src/content/projects" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">Projects Folder on GitHub</a>.</li>
+        <div className="bg-paper-deep border-2 border-ink/20 rounded-lg p-6 mb-8 text-left">
+          <h3 className="font-semibold text-ink mb-3">Next Steps:</h3>
+          <ol className="list-decimal list-inside text-ink-soft space-y-3">
+            <li>Go to the <a href="https://github.com/bc-ai-ecosystem/awesome-bc-ai/tree/main/src/content/projects" target="_blank" rel="noopener noreferrer" className="text-chartreuse-ink font-semibold hover:underline">Projects Folder on GitHub</a>.</li>
             <li>Click <strong>Add file</strong> &gt; <strong>Create new file</strong>.</li>
             <li className="flex items-center flex-wrap gap-2">
               In the filename box, type 
-              <code className="bg-slate-800 px-2 py-1 rounded border border-slate-700 select-all font-mono text-sm">{projectDirName}/index.md</code>
+              <code className="bg-card px-2 py-1 rounded border border-ink/25 select-all font-mono text-sm">{projectDirName}/index.md</code>
               <button 
                 onClick={handleCopy}
-                className="inline-flex items-center justify-center p-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700 shadow-sm group relative"
+                className="inline-flex items-center justify-center p-1.5 rounded-md bg-card hover:bg-paper-deep text-ink-soft hover:text-ink transition-colors border-2 border-ink/25 shadow-sm group relative"
                 title="Copy to clipboard"
               >
                 {copied ? (
@@ -187,7 +188,7 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
                 ) : (
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                 )}
-                {copied && <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded shadow">Copied!</span>}
+                {copied && <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-ink text-paper text-xs px-2 py-1 rounded shadow">Copied!</span>}
               </button>
             </li>
             <li>
@@ -199,7 +200,7 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
                     setCopiedMd(true);
                     setTimeout(() => setCopiedMd(false), 2000);
                   }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700 shadow-sm text-sm"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-card hover:bg-paper-deep text-ink-soft hover:text-ink transition-colors border-2 border-ink/25 shadow-sm text-sm"
                 >
                   {copiedMd ? (
                     <><svg className="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> Copied Markdown!</>
@@ -220,7 +221,7 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
         
         <button 
           onClick={() => setIsGenerated(false)}
-          className="text-slate-400 hover:text-white transition-colors text-sm"
+          className="text-ink-soft hover:text-ink transition-colors text-sm"
         >
           &larr; Submit another project
         </button>
@@ -231,15 +232,15 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-center mb-8">
-        <div className="bg-slate-900 p-1 rounded-lg border border-slate-700 inline-flex">
+        <div className="bg-paper-deep p-1 rounded-lg border-2 border-ink/25 inline-flex">
           <button
-            className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${mode === 'edit' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
+            className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${mode === 'edit' ? 'bg-ink text-paper shadow-sm' : 'text-ink-soft hover:text-ink'}`}
             onClick={() => setMode('edit')}
           >
             Edit Form
           </button>
           <button
-            className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${mode === 'preview' ? 'bg-brand-primary text-slate-900 shadow-sm' : 'text-slate-400 hover:text-white'}`}
+            className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${mode === 'preview' ? 'bg-chartreuse text-ink shadow-sm font-semibold' : 'text-ink-soft hover:text-ink'}`}
             onClick={() => setMode('preview')}
           >
             Live Preview
@@ -249,15 +250,15 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
 
       <div className={mode === 'preview' ? 'block' : 'hidden'}>
         <div className="max-w-md mx-auto">
-          <div className="text-center text-sm text-slate-400 mb-4">This is how your project card will appear in the directory:</div>
-          <div className={`h-full border border-slate-800 bg-slate-800/40 rounded-xl p-6 backdrop-blur-sm transition-all duration-300 shadow-lg flex flex-col pointer-events-none`}>
+          <div className="text-center text-sm text-ink-soft mb-4">This is how your project card will appear in the directory:</div>
+          <div className={`h-full border-2 border-ink bg-card rounded-xl p-6 transition-all duration-300 shadow-print-sm flex flex-col pointer-events-none`}>
             
             {imagePreviewUrl && (
-              <img src={imagePreviewUrl} alt="Preview" className="w-full h-48 object-cover rounded-lg mb-4 border border-slate-700" />
+              <img src={imagePreviewUrl} alt="Preview" className="w-full h-48 object-cover rounded-lg mb-4 border-2 border-ink/20" />
             )}
             
             {formData.video_url && (
-               <div className="w-full aspect-video bg-slate-900 rounded-lg border border-slate-700 mb-4 flex flex-col items-center justify-center text-slate-500">
+               <div className="w-full aspect-video bg-paper-deep rounded-lg border-2 border-ink/20 mb-4 flex flex-col items-center justify-center text-ink-soft">
                  <svg className="w-8 h-8 opacity-50 mb-2" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                  <span className="text-xs">Video Embed Preview</span>
                </div>
@@ -268,40 +269,40 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
                 <img 
                   src={`https://github.com/${formData.author_github.replace('@', '')}.png`} 
                   alt={formData.author_github} 
-                  className="w-10 h-10 rounded-full border border-slate-700"
+                  className="w-10 h-10 rounded-full border-2 border-ink/20"
                   onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDIxdi0yYTQgNCAw MDAwLTQtNEg4YTQgNCAwIDAwLTQgNHYyIj48L3BhdGg+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ij48L2NpcmNsZT48L3N2Zz4=' }}
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full border border-slate-700 bg-slate-700 flex items-center justify-center text-slate-300 font-bold">
+                <div className="w-10 h-10 rounded-full border-2 border-ink/20 bg-paper-deep flex items-center justify-center text-ink font-bold">
                   {formData.author_name ? formData.author_name.charAt(0).toUpperCase() : '?'}
                 </div>
               )}
               <div className="text-sm">
-                <p className="text-slate-300 font-medium">{formData.author_name || 'Your Name'}</p>
+                <p className="text-ink font-medium">{formData.author_name || 'Your Name'}</p>
                 {formData.author_github && (
-                  <p className="text-slate-500 text-xs">@{formData.author_github.replace('@', '')}</p>
+                  <p className="text-ink-soft text-xs">@{formData.author_github.replace('@', '')}</p>
                 )}
               </div>
             </div>
             
-            <h3 className="text-xl font-bold text-white mb-2">{formData.title || 'Project Title'}</h3>
+            <h3 className="text-xl font-bold font-display text-ink mb-2">{formData.title || 'Project Title'}</h3>
             <span className={`inline-block text-xs font-semibold mb-3 ${getAccentClass(formData.category).split(' ')[0]}`}>{formData.category}</span>
             
             {(formData.project_start_date || formData.project_end_date) && (
-              <div className="text-xs text-slate-400 mb-3 flex items-center gap-1.5">
+              <div className="text-xs text-ink-soft mb-3 flex items-center gap-1.5">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 {formData.project_start_date || '...'} {formData.project_end_date ? `to ${formData.project_end_date}` : ''}
               </div>
             )}
             
-            <p className="text-slate-400 text-sm line-clamp-3 mb-6 flex-grow">{formData.description || 'Your project description will appear here...'}</p>
+            <p className="text-ink-soft text-sm line-clamp-3 mb-6 flex-grow">{formData.description || 'Your project description will appear here...'}</p>
             
             <div className="mt-auto flex flex-wrap gap-2">
               {selectedTags.map(tag => (
-                <span key={tag.value} className="px-2 py-1 text-xs rounded bg-slate-700/50 text-slate-300">#{tag.label}</span>
+                <span key={tag.value} className="px-2 py-1 text-xs rounded-full bg-paper-deep border border-ink/15 text-ink-soft">#{tag.label}</span>
               ))}
               {selectedTags.length === 0 && (
-                <span className="px-2 py-1 text-xs rounded bg-slate-700/50 text-slate-500 italic">#tags</span>
+                <span className="px-2 py-1 text-xs rounded-full bg-paper-deep border border-ink/15 text-ink-soft italic">#tags</span>
               )}
             </div>
           </div>
@@ -312,122 +313,123 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-slate-300 mb-1">Project Title <span className="text-red-400">*</span></label>
+              <label htmlFor="title" className="block text-sm font-semibold text-ink mb-1">Project Title <span className="text-red-600">*</span></label>
               <input 
                 type="text" 
                 id="title" name="title" required maxLength={60}
                 value={formData.title} onChange={handleChange}
                 placeholder="Awesome AI App"
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all"
               />
             </div>
             <div>
-              <label htmlFor="author_name" className="block text-sm font-medium text-slate-300 mb-1">Your Name <span className="text-red-400">*</span></label>
+              <label htmlFor="author_name" className="block text-sm font-semibold text-ink mb-1">Your Name <span className="text-red-600">*</span></label>
               <input 
                 type="text" 
                 id="author_name" name="author_name" required
                 value={formData.author_name} onChange={handleChange}
                 placeholder="Jane Doe"
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all"
               />
             </div>
           </div>
           
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-slate-300 mb-1">Short Description <span className="text-red-400">*</span></label>
+            <label htmlFor="description" className="block text-sm font-semibold text-ink mb-1">Short Description <span className="text-red-600">*</span></label>
             <input 
               type="text" 
               id="description" name="description" required maxLength={160}
               value={formData.description} onChange={handleChange}
               placeholder="A brief 1-2 sentence description of what the project does."
-              className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+              className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="author_github" className="block text-sm font-medium text-slate-300 mb-1">GitHub Handle</label>
+              <label htmlFor="author_github" className="block text-sm font-semibold text-ink mb-1">GitHub Handle</label>
               <input 
                 type="text" 
                 id="author_github" name="author_github"
                 value={formData.author_github} onChange={handleChange}
                 placeholder="username"
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all"
               />
             </div>
             <div>
-              <label htmlFor="github_repo" className="block text-sm font-medium text-slate-300 mb-1">GitHub Repo URL</label>
+              <label htmlFor="github_repo" className="block text-sm font-semibold text-ink mb-1">GitHub Repo URL</label>
               <input 
                 type="url" 
                 id="github_repo" name="github_repo"
                 value={formData.github_repo} onChange={handleChange}
                 placeholder="https://github.com/..."
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="category" className="block text-sm font-medium text-slate-300 mb-1">Category <span className="text-red-400">*</span></label>
+              <label htmlFor="category" className="block text-sm font-semibold text-ink mb-1">Category <span className="text-red-600">*</span></label>
               <select 
                 id="category" name="category" required
                 value={formData.category} onChange={handleChange}
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all appearance-none"
+                className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all appearance-none"
               >
                 <option value="Hackathons & Sprints">Hackathons & Sprints</option>
                 <option value="Open Data & Community Archives">Open Data & Community Archives</option>
                 <option value="Ecosystem Tooling & Infra">Ecosystem Tooling & Infra</option>
                 <option value="Creative & Physical Modalities">Creative & Physical Modalities</option>
+                <option value="Learning & Research">Learning & Research</option>
               </select>
             </div>
             <div>
-              <label htmlFor="demo_url" className="block text-sm font-medium text-slate-300 mb-1">Live Demo URL</label>
+              <label htmlFor="demo_url" className="block text-sm font-semibold text-ink mb-1">Live Demo URL</label>
               <input 
                 type="url" 
                 id="demo_url" name="demo_url"
                 value={formData.demo_url} onChange={handleChange}
                 placeholder="https://..."
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="project_start_date" className="block text-sm font-medium text-slate-300 mb-1">Start Date</label>
+              <label htmlFor="project_start_date" className="block text-sm font-semibold text-ink mb-1">Start Date</label>
               <input 
                 type="date" 
                 id="project_start_date" name="project_start_date"
                 value={formData.project_start_date} onChange={handleChange}
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all [color-scheme:dark]"
+                className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all [color-scheme:light]"
               />
             </div>
             <div>
-              <label htmlFor="project_end_date" className="block text-sm font-medium text-slate-300 mb-1">End Date</label>
+              <label htmlFor="project_end_date" className="block text-sm font-semibold text-ink mb-1">End Date</label>
               <input 
                 type="date" 
                 id="project_end_date" name="project_end_date"
                 value={formData.project_end_date} onChange={handleChange}
-                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all [color-scheme:dark]"
+                className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all [color-scheme:light]"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="video_url" className="block text-sm font-medium text-slate-300 mb-1">Video URL (YouTube, Vimeo, MP4)</label>
+            <label htmlFor="video_url" className="block text-sm font-semibold text-ink mb-1">Video URL (YouTube, Vimeo, MP4)</label>
             <input 
               type="url" 
               id="video_url" name="video_url"
               value={formData.video_url} onChange={handleChange}
               placeholder="https://youtube.com/watch?v=..."
-              className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+              className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="tags" className="block text-sm font-medium text-slate-300 mb-1">Tags (Max 5)</label>
+              <label htmlFor="tags" className="block text-sm font-semibold text-ink mb-1">Tags (Max 5)</label>
               <CreatableSelect 
                 isMulti
                 name="tags"
@@ -442,7 +444,7 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
               />
             </div>
             <div>
-              <label htmlFor="event" className="block text-sm font-medium text-slate-300 mb-1">Event Name</label>
+              <label htmlFor="event" className="block text-sm font-semibold text-ink mb-1">Event Name</label>
               <CreatableSelect 
                 isClearable
                 name="event"
@@ -457,31 +459,31 @@ export default function ProjectGenerator({ existingTags = [], existingEvents = [
           </div>
 
           <div>
-            <label htmlFor="image" className="block text-sm font-medium text-slate-300 mb-1">Project Image (Optional)</label>
+            <label htmlFor="image" className="block text-sm font-semibold text-ink mb-1">Project Image (Optional)</label>
             <input 
               type="file" 
               id="image" name="image"
               accept="image/*"
               onChange={handleImageChange}
-              className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-slate-900 hover:file:bg-lime-300 cursor-pointer"
+              className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink focus:outline-none focus:border-ink transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-ink file:text-paper hover:file:bg-navy cursor-pointer"
             />
-            <p className="text-xs text-slate-500 mt-2">The image will be displayed on your project card. You'll need to upload it to GitHub alongside your Markdown file.</p>
+            <p className="text-xs text-ink-soft mt-2">The image will be displayed on your project card. You'll need to upload it to GitHub alongside your Markdown file.</p>
           </div>
 
           <div>
-            <label htmlFor="body" className="block text-sm font-medium text-slate-300 mb-1">Detailed Description (Markdown Supported)</label>
+            <label htmlFor="body" className="block text-sm font-semibold text-ink mb-1">Detailed Description (Markdown Supported)</label>
             <textarea 
               id="body" name="body" rows={6}
               value={formData.body} onChange={handleChange}
               placeholder="Write a longer description, features, how to run, etc. Markdown is supported."
-              className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all font-mono text-sm"
+              className="w-full bg-white border-2 border-ink/50 rounded-lg px-4 py-2 text-ink placeholder:text-ink-soft/50 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60 transition-all font-mono text-sm"
             ></textarea>
           </div>
         </div>
 
         <button 
           type="submit"
-          className="w-full py-4 rounded-xl bg-brand-primary text-slate-900 font-bold text-lg hover:bg-lime-300 transition-colors shadow-[0_0_20px_rgba(163,230,53,0.3)] hover:shadow-[0_0_30px_rgba(163,230,53,0.5)]"
+          className="w-full py-4 rounded-xl bg-ink text-paper font-bold text-lg hover:bg-navy transition-all shadow-print hover:shadow-print-sm"
         >
           Generate Project Files
         </button>

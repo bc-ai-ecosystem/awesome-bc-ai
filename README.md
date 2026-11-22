@@ -1,4 +1,4 @@
-> **Copied 2026-10-05.** A snapshot of this repo now lives in the kk-kb monorepo at [`content/projects/02-bc-ai-ecosystem-nonprofit/publishing/awesome-bc-ai/`](https://github.com/WalksWithASwagger/kk-kb/tree/main/content/projects/02-bc-ai-ecosystem-nonprofit/publishing/awesome-bc-ai) (source commit `6ddf5ce76d14`), earmarked as source content for the bc-ai.ca redesign. This repo and its GitHub Pages site stay live for now; see PROVENANCE.md there.
+> **Revived 2026-11-22.** This repo is once again the living home of the Awesome BC + AI directory: seeded with 10 ecosystem entries and rebuilt with an editorial redesign plus an interactive Vancouver AI meetup archive. (An earlier snapshot from 2026-10-05 lives in the kk-kb monorepo at [`content/projects/02-bc-ai-ecosystem-nonprofit/publishing/awesome-bc-ai/`](https://github.com/WalksWithASwagger/kk-kb/tree/main/content/projects/02-bc-ai-ecosystem-nonprofit/publishing/awesome-bc-ai), earmarked as source content for the bc-ai.ca redesign.)
 
 # BC + AI Ecosystem
 

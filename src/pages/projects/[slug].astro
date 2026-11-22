@@ -13,39 +13,21 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+const base = import.meta.env.BASE_URL;
 
-// Generate accent class string based on category
-const getAccentClass = (category: string) => {
-  switch(category) {
-    case 'Hackathons & Sprints': return 'text-brand-primary border-brand-primary bg-brand-primary/10';
-    case 'Creative & Physical Modalities': return 'text-accent-creative border-accent-creative bg-accent-creative/10';
-    case 'Open Data & Community Archives': return 'text-accent-ethical border-accent-ethical bg-accent-ethical/10';
-    case 'Ecosystem Tooling & Infra': return 'text-accent-tooling border-accent-tooling bg-accent-tooling/10';
-    default: return 'text-slate-400 border-slate-700 bg-slate-800';
-  }
+const CAT: Record<string, { text: string; chip: string }> = {
+  'Hackathons & Sprints': { text: 'text-cat-hack', chip: 'bg-cat-hack/10 text-cat-hack border-cat-hack/40' },
+  'Creative & Physical Modalities': { text: 'text-cat-creative', chip: 'bg-cat-creative/10 text-cat-creative border-cat-creative/40' },
+  'Open Data & Community Archives': { text: 'text-cat-data', chip: 'bg-cat-data/10 text-cat-data border-cat-data/40' },
+  'Ecosystem Tooling & Infra': { text: 'text-cat-tool', chip: 'bg-cat-tool/10 text-cat-tool border-cat-tool/40' },
+  'Learning & Research': { text: 'text-cat-learn', chip: 'bg-cat-learn/10 text-cat-learn border-cat-learn/40' },
 };
-
-const getTextColor = (category: string) => {
-  switch(category) {
-    case 'Hackathons & Sprints': return 'text-brand-primary';
-    case 'Creative & Physical Modalities': return 'text-accent-creative';
-    case 'Open Data & Community Archives': return 'text-accent-ethical';
-    case 'Ecosystem Tooling & Infra': return 'text-accent-tooling';
-    default: return 'text-slate-300';
-  }
-};
-
-const accentClass = getAccentClass(project.data.category);
-const textColor = getTextColor(project.data.category);
+const cat = CAT[project.data.category] ?? { text: 'text-ink', chip: 'bg-ink/5 text-ink border-ink/30' };
 
 const getEmbedUrl = (url: string) => {
   if (!url) return null;
-  if (url.includes('youtube.com/watch?v=')) {
-    return url.replace('watch?v=', 'embed/');
-  }
-  if (url.includes('youtu.be/')) {
-    return url.replace('youtu.be/', 'youtube.com/embed/');
-  }
+  if (url.includes('youtube.com/watch?v=')) return url.replace('watch?v=', 'embed/');
+  if (url.includes('youtu.be/')) return url.replace('youtu.be/', 'youtube.com/embed/');
   if (url.includes('vimeo.com/')) {
     const videoId = url.split('vimeo.com/')[1];
     return `https://player.vimeo.com/video/${videoId}`;
@@ -57,17 +39,17 @@ const videoUrl = project.data.video_url ? getEmbedUrl(project.data.video_url) : 
 const isMp4 = videoUrl?.endsWith('.mp4');
 ---
 
-<Layout title={project.data.title} category={project.data.category}>
+<Layout title={project.data.title} category={project.data.category} description={project.data.description}>
 	<div class="max-w-4xl mx-auto">
-		<header class="mb-12">
-      <div class="flex items-center flex-wrap gap-4 mb-6">
-        <a href={`${import.meta.env.BASE_URL}directory`} class="text-sm text-slate-400 hover:text-white transition-colors">&larr; Back to Directory</a>
-        <span class={`px-3 py-1 text-xs font-semibold rounded-full border ${accentClass}`}>
+		<header class="mb-10">
+      <div class="flex items-center flex-wrap gap-4 mb-7">
+        <a href={`${base}directory`} class="text-sm font-medium text-ink-soft hover:text-ink transition-colors">&larr; Back to Directory</a>
+        <span class={`px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] rounded-full border ${cat.chip}`}>
           {project.data.category}
         </span>
         {(project.data.project_start_date || project.data.project_end_date) && (
-          <div class="text-sm text-slate-400 flex items-center gap-1.5 md:ml-auto">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <div class="text-sm text-ink-soft flex items-center gap-1.5 md:ml-auto">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             <span class="date-relative" data-start={project.data.project_start_date} data-end={project.data.project_end_date}>
               {project.data.project_start_date || '...'} {project.data.project_end_date ? `to ${project.data.project_end_date}` : ''}
             </span>
@@ -75,49 +57,49 @@ const isMp4 = videoUrl?.endsWith('.mp4');
         )}
       </div>
 
-			<h1 class={`text-4xl md:text-5xl font-bold font-display tracking-tight mb-4 ${textColor}`}>
+			<h1 class="font-display font-black text-4xl md:text-6xl tracking-tight leading-[1.02] mb-5">
 				{project.data.title}
 			</h1>
-			
-			<p class="text-xl text-slate-300 mb-8 border-l-2 border-slate-700 pl-4">
+
+			<p class="text-xl text-ink-soft leading-relaxed mb-9 border-l-4 border-chartreuse pl-5">
 				{project.data.description}
 			</p>
 
-      <div class="flex flex-wrap items-center gap-6 pb-8 border-b border-slate-700/50">
+      <div class="flex flex-wrap items-center gap-6 pb-8 border-b-2 border-ink/10">
         <div class="flex items-center gap-3">
           {project.data.author_github ? (
-            <img 
-              src={`https://github.com/${project.data.author_github.replace('@', '')}.png`} 
-              alt={project.data.author_github} 
-              class="w-12 h-12 rounded-full border border-slate-600"
+            <img
+              src={`https://github.com/${project.data.author_github.replace('@', '')}.png`}
+              alt={project.data.author_github}
+              class="w-12 h-12 rounded-full border-2 border-ink/20"
             />
           ) : (
-            <div class="w-12 h-12 rounded-full border border-slate-600 bg-slate-700 flex items-center justify-center text-slate-300 font-bold text-lg">
+            <div class="w-12 h-12 rounded-full border-2 border-ink/20 bg-paper-deep flex items-center justify-center text-ink font-bold text-lg">
               {project.data.author_name.charAt(0).toUpperCase()}
             </div>
           )}
           <div>
-            <p class="text-sm text-slate-400">Created by</p>
+            <p class="text-xs uppercase tracking-widest text-ink-soft">Created by</p>
             {project.data.author_github ? (
-              <a href={`https://github.com/${project.data.author_github.replace('@', '')}`} target="_blank" rel="noopener noreferrer" class="font-medium text-white hover:underline decoration-slate-500 underline-offset-4">
+              <a href={`https://github.com/${project.data.author_github.replace('@', '')}`} target="_blank" rel="noopener noreferrer" class="font-semibold text-ink hover:underline decoration-2 underline-offset-4">
                 {project.data.author_name} (@{project.data.author_github.replace('@', '')})
               </a>
             ) : (
-              <p class="font-medium text-white">{project.data.author_name}</p>
+              <p class="font-semibold text-ink">{project.data.author_name}</p>
             )}
           </div>
         </div>
 
         <div class="flex gap-3 ml-auto">
           {project.data.github_repo && (
-            <a href={project.data.github_repo} target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg border border-slate-600 bg-slate-800 text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
+            <a href={project.data.github_repo} target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg border-2 border-ink bg-card text-sm font-semibold hover:shadow-print-sm transition-all flex items-center gap-2">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
               GitHub Repo
             </a>
           )}
           {project.data.demo_url && (
-            <a href={project.data.demo_url} target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-900 text-sm font-bold hover:bg-white transition-colors flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            <a href={project.data.demo_url} target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-ink text-paper text-sm font-bold hover:bg-navy transition-colors flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
               Live Demo
             </a>
           )}
@@ -125,13 +107,13 @@ const isMp4 = videoUrl?.endsWith('.mp4');
       </div>
 		</header>
 
-		<article class="prose prose-invert prose-slate max-w-none prose-headings:font-display prose-a:text-brand-primary hover:prose-a:text-lime-300">
+		<article class="prose prose-slate max-w-none prose-headings:font-display prose-headings:text-ink prose-p:text-ink-soft prose-li:text-ink-soft prose-strong:text-ink prose-a:text-chartreuse-ink prose-a:font-semibold hover:prose-a:text-ink">
       {project.data.image && (
-        <Image src={project.data.image} alt={project.data.title} class="w-full h-auto rounded-xl mt-8 mb-12 shadow-lg border border-slate-700" />
+        <Image src={project.data.image} alt={project.data.title} class="w-full h-auto rounded-xl mt-2 mb-10 border-2 border-ink shadow-print" />
       )}
-      
+
       {videoUrl && (
-        <div class="mb-12 rounded-xl overflow-hidden shadow-lg border border-slate-700">
+        <div class="mb-10 rounded-xl overflow-hidden border-2 border-ink shadow-print">
           {isMp4 ? (
             <video controls class="w-full h-auto" src={videoUrl}></video>
           ) : (
@@ -144,23 +126,23 @@ const isMp4 = videoUrl?.endsWith('.mp4');
 			<Content />
 		</article>
 
-    <footer class="mt-16 pt-8 border-t border-slate-800">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <footer class="mt-14 pt-8 border-t-2 border-ink/10">
+      <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
         <div>
-          <h3 class="text-sm font-medium text-slate-400 mb-2">Tags</h3>
-          <div class="flex flex-wrap gap-2">
+          <h3 class="text-xs font-bold uppercase tracking-widest text-ink-soft mb-2.5">Tags</h3>
+          <div class="flex flex-wrap gap-1.5">
             {project.data.tags.map(tag => (
-              <a href={`${import.meta.env.BASE_URL}directory?tag=${encodeURIComponent(tag)}`} class="px-3 py-1 text-xs rounded bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              <a href={`${base}directory?tag=${encodeURIComponent(tag)}`} class="px-3 py-1 text-xs font-medium rounded-full border border-ink/25 bg-card text-ink-soft hover:border-ink hover:text-ink transition-colors">
                 #{tag}
               </a>
             ))}
           </div>
         </div>
-        
+
         {project.data.event && (
-          <div class="text-right">
-            <h3 class="text-sm font-medium text-slate-400 mb-2">Event</h3>
-            <a href={`${import.meta.env.BASE_URL}events/${encodeURIComponent(project.data.event)}`} class="inline-block px-4 py-2 text-sm rounded bg-slate-800/50 border border-slate-700 text-slate-200 hover:bg-slate-800 transition-colors">
+          <div class="md:text-right">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-ink-soft mb-2.5">Event</h3>
+            <a href={`${base}events/${encodeURIComponent(project.data.event)}`} class="inline-block px-4 py-2 text-sm font-semibold rounded-lg bg-cat-hack/10 border border-cat-hack/40 text-ink hover:bg-cat-hack/20 transition-colors">
               {project.data.event}
             </a>
           </div>
@@ -182,7 +164,7 @@ const isMp4 = videoUrl?.endsWith('.mp4');
   dateElements.forEach(el => {
     const startStr = el.getAttribute('data-start');
     const endStr = el.getAttribute('data-end');
-    
+
     let relativeText = '';
     let titleText = '';
 

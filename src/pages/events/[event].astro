@@ -6,7 +6,7 @@ import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
   const events = new Set(projects.map(p => p.data.event).filter(Boolean));
-  
+
   return Array.from(events).map(event => ({
     params: { event },
     props: { eventProjects: projects.filter(p => p.data.event === event) },
@@ -18,18 +18,15 @@ const { eventProjects } = Astro.props;
 ---
 
 <Layout title={`${event} Projects`}>
-	<div class="mb-12">
-    <div class="flex items-center gap-4 mb-4">
-      <a href={`${import.meta.env.BASE_URL}directory`} class="text-sm text-slate-400 hover:text-white transition-colors">&larr; Back to Directory</a>
-      <span class="px-3 py-1 text-xs font-semibold rounded-full border border-slate-600 bg-slate-800 text-slate-300">
-        Event Roster
-      </span>
+	<div class="mb-10">
+    <a href={`${import.meta.env.BASE_URL}directory`} class="text-sm font-medium text-ink-soft hover:text-ink transition-colors">&larr; Back to Directory</a>
+    <div class="mt-5">
+      <span class="inline-block px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] rounded-full bg-cat-hack/15 text-cat-hack border border-cat-hack/40 mb-4">Event Roster</span>
+      <h1 class="font-display font-black text-4xl md:text-6xl tracking-tight mb-4">{event}</h1>
+      <p class="text-lg text-ink-soft max-w-3xl leading-relaxed">
+        Projects created and submitted during this event.
+      </p>
     </div>
-
-		<h1 class="text-4xl md:text-5xl font-bold font-display tracking-tight text-white mb-4">{event}</h1>
-		<p class="text-xl text-slate-400 max-w-3xl">
-			Projects created and submitted during this event.
-		</p>
 	</div>
 
 	<ProjectSearch client:load projects={eventProjects} />
