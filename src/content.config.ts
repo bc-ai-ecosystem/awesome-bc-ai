@@ -17,7 +17,8 @@ const projectCollection = defineCollection({
       'Hackathons & Sprints',
       'Open Data & Community Archives',
       'Ecosystem Tooling & Infra',
-      'Creative & Physical Modalities'
+      'Creative & Physical Modalities',
+      'Learning & Research'
     ]),
     tags: z.array(z.string()).max(5, "Maximum of 5 tags allowed"),
     event: z.string().optional(),
