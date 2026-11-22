@@ -6,12 +6,13 @@ import { getCollection } from 'astro:content';
 const projects = await getCollection('projects');
 ---
 
-<Layout title="Directory">
-	<div class="mb-12">
-		<h1 class="text-4xl md:text-5xl font-bold font-display tracking-tight text-white mb-4">Ecosystem Directory</h1>
-		<p class="text-xl text-slate-400 max-w-3xl">
-			Explore the growing list of projects, tools, and archives built by the community. 
-			Filter by category, search for specific terms, or browse tags.
+<Layout title="Directory" description="Explore the projects, tools, datasets and archives built by the BC + AI community.">
+	<div class="mb-10">
+		<p class="text-[11px] font-bold uppercase tracking-[0.2em] text-chartreuse-ink mb-3">Awesome BC + AI</p>
+		<h1 class="font-display font-black text-4xl md:text-6xl tracking-tight mb-4">Ecosystem Directory</h1>
+		<p class="text-lg text-ink-soft max-w-3xl leading-relaxed">
+			Everything the community has shipped and shared: projects, tools, datasets, books and archives.
+			Filter by field, search, or browse the timeline.
 		</p>
 	</div>
 

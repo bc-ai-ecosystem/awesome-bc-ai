@@ -8,15 +8,16 @@ const allTags = Array.from(new Set(projects.flatMap(p => p.data.tags))).sort();
 const allEvents = Array.from(new Set(projects.map(p => p.data.event).filter(Boolean) as string[])).sort();
 ---
 
-<Layout title="Submit Project">
-	<div class="mb-12 text-center max-w-3xl mx-auto">
-		<h1 class="text-4xl md:text-5xl font-bold font-display tracking-tight text-white mb-4">Submit a Project</h1>
-		<p class="text-xl text-slate-400">
-			Add your project to the ecosystem directory without writing any code. Fill out the form below to generate a Markdown file, then upload it to our GitHub repository.
+<Layout title="Submit Project" description="Add your project to the BC + AI Ecosystem Directory — no code required.">
+	<div class="mb-10 text-center max-w-3xl mx-auto">
+		<p class="text-[11px] font-bold uppercase tracking-[0.2em] text-chartreuse-ink mb-3">Join the directory</p>
+		<h1 class="font-display font-black text-4xl md:text-6xl tracking-tight mb-4">Submit a Project</h1>
+		<p class="text-lg text-ink-soft leading-relaxed">
+			Add your project to the ecosystem directory without writing any code. Fill out the form to generate a Markdown file, then upload it to our GitHub repository.
 		</p>
 	</div>
 
-	<div class="bg-slate-800/30 border border-slate-700/50 p-6 md:p-10 rounded-2xl backdrop-blur-sm max-w-3xl mx-auto shadow-xl">
+	<div class="bg-card border-2 border-ink p-6 md:p-10 rounded-2xl max-w-3xl mx-auto shadow-print">
 		<ProjectGenerator client:only="react" existingTags={allTags} existingEvents={allEvents} />
 	</div>
 </Layout>

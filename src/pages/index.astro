@@ -1,100 +1,178 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
 import ProjectCard from '../components/ProjectCard';
+import meetups from '../data/meetups.json';
 
 const projects = await getCollection('projects');
+const base = import.meta.env.BASE_URL;
+
+const byDate = [...projects].sort((a, b) => (b.data.project_start_date ?? '').localeCompare(a.data.project_start_date ?? ''));
+const latest = byDate.slice(0, 6);
+const featured = ['vancouver-ai-meetup-archive', 'training-your-own-models']
+	.map(id => projects.find(p => p.id === id))
+	.filter(Boolean);
+
+const speakers = new Set(meetups.flatMap(m => m.speakers));
+const transcriptCount = meetups.reduce((n, m) => n + m.transcripts.length, 0);
+const recentMeetups = [...meetups].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
 
 const categories = [
-  { name: 'Hackathons & Sprints', accent: 'text-brand-primary border-brand-primary', description: 'Where caffeine meets code. Explore the R&D engines of our community, featuring tools and prototypes built during intensive two-month hackathons and collaborative build nights.' },
-  { name: 'Creative & Physical Modalities', accent: 'text-accent-creative border-accent-creative', description: 'AI beyond the screen. A showcase of multi-modal art, autonomous hardware builds, AI Film Club cinematic experiments, and physical installations.' },
-  { name: 'Open Data & Community Archives', accent: 'text-accent-ethical border-accent-ethical', description: 'Knowledge belongs to the collective. Dive into open-source datasets, meetup transcripts, and research aimed at keeping AI out of corporate silos.' },
-  { name: 'Ecosystem Tooling & Infra', accent: 'text-accent-tooling border-accent-tooling', description: 'The digital roots that keep our network thriving. Discover the custom bots, workflow automations, and scripts built by volunteers to sustain the Braintrust.' }
+	{ name: 'Hackathons & Sprints', dot: 'bg-cat-hack', text: 'text-cat-hack', blurb: 'Two-month build sprints where the community turns open data into prototypes, provocations and demos.' },
+	{ name: 'Open Data & Community Archives', dot: 'bg-cat-data', text: 'text-cat-data', blurb: 'Knowledge belongs to the collective: open datasets, meetup transcripts and research outside corporate silos.' },
+	{ name: 'Ecosystem Tooling & Infra', dot: 'bg-cat-tool', text: 'text-cat-tool', blurb: 'The digital roots of the network: bots, automations and directories built by volunteers to sustain the Braintrust.' },
+	{ name: 'Creative & Physical Modalities', dot: 'bg-cat-creative', text: 'text-cat-creative', blurb: 'AI beyond the screen: music, film, installations and multi-modal art from BC creators.' },
+	{ name: 'Learning & Research', dot: 'bg-cat-learn', text: 'text-cat-learn', blurb: 'Books, courses and research from inside the ecosystem, written to be used, not just cited.' },
 ];
+
+const stats = [
+	{ value: String(projects.length), label: 'projects listed' },
+	{ value: String(transcriptCount), label: 'meetup transcripts' },
+	{ value: String(speakers.size), label: 'speakers archived' },
+	{ value: '~250k', label: 'words of open discourse' },
+	{ value: '2,000+', label: 'survey responses published' },
+];
+
+const fmtDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' });
 ---
 
 <Layout title="Home">
-	<section class="py-20 flex flex-col items-center justify-center text-center px-4">
-		<div class="inline-block mb-4 px-3 py-1 rounded-full border border-slate-700 bg-slate-800/50 backdrop-blur-md text-sm text-slate-300 font-medium">
-			No Gatekeepers. Just Builders.
-		</div>
-		<h1 class="text-5xl md:text-7xl font-bold font-display tracking-tight text-white mb-6">
-			Awesome <br/>
-			<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-accent-creative">BC + AI Ecosystem</span>
-		</h1>
-		<p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
-			An open, static directory for discovering the incredible projects, archives, and tools being built across British Columbia.
-		</p>
-		<div class="flex gap-4 justify-center">
-			<a href={`${import.meta.env.BASE_URL}directory`} class="px-8 py-3 rounded-lg bg-brand-primary text-slate-900 font-bold hover:bg-lime-300 transition-colors shadow-[0_0_20px_rgba(163,230,53,0.3)]">
-				Explore Directory
-			</a>
-			<a href={`${import.meta.env.BASE_URL}add`} class="px-8 py-3 rounded-lg border border-slate-700 bg-slate-800 text-white font-medium hover:bg-slate-700 transition-colors">
-				Submit Project
-			</a>
-		</div>
-	</section>
-
-	<section class="max-w-4xl mx-auto px-4 md:px-8 mb-20 text-center">
-		<div class="p-8 md:p-12 rounded-2xl border border-brand-primary/20 bg-slate-800/40 backdrop-blur-sm shadow-[0_0_30px_rgba(163,230,53,0.05)]">
-			<h2 class="text-3xl font-bold font-display text-white mb-4">Built by the Community, for the Community.</h2>
-			<p class="text-lg text-slate-300 leading-relaxed">
-				We are British Columbia's grassroots AI collective. We believe in DIY over gatekeepers, community before clout, and building a future where artificial intelligence serves culture, creativity, and the planet. This directory is a living archive of our radically local, ethically bold approach to AI.
+	<!-- HERO -->
+	<section class="relative overflow-hidden rounded-3xl bg-navy-deep text-paper px-6 py-16 md:px-14 md:py-20 mb-14 border-2 border-ink shadow-print-lg">
+		<div class="absolute inset-0 opacity-[0.13]" style="background-image: radial-gradient(circle at 1.5px 1.5px, #c9f158 1.5px, transparent 0); background-size: 26px 26px;"></div>
+		<div class="relative">
+			<p class="text-chartreuse text-xs md:text-sm font-bold uppercase tracking-[0.22em] mb-5">British Columbia's grassroots AI collective</p>
+			<h1 class="font-display font-black text-5xl md:text-7xl leading-[0.98] tracking-tight max-w-3xl">
+				What BC is building <span class="italic font-semibold text-chartreuse">with AI.</span>
+			</h1>
+			<p class="mt-6 text-lg md:text-xl text-paper/80 max-w-2xl leading-relaxed">
+				An open directory of the projects, datasets, books and archives coming out of the BC + AI ecosystem. Radically local, ethically bold, and built in public.
 			</p>
+			<div class="mt-9 flex flex-wrap gap-3.5">
+				<a href={`${base}directory`} class="px-7 py-3 rounded-lg bg-chartreuse text-ink font-bold border-2 border-chartreuse hover:bg-paper hover:border-paper transition-colors">Explore the directory</a>
+				<a href={`${base}archive`} class="px-7 py-3 rounded-lg border-2 border-paper/40 text-paper font-semibold hover:border-chartreuse hover:text-chartreuse transition-colors">Browse the meetup archive</a>
+			</div>
+			<dl class="mt-12 pt-8 border-t border-paper/20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+				{stats.map(s => (
+					<div>
+						<dt class="sr-only">{s.label}</dt>
+						<dd class="font-display font-black text-3xl md:text-4xl text-chartreuse">{s.value}</dd>
+						<dd class="text-xs uppercase tracking-widest text-paper/60 mt-1">{s.label}</dd>
+					</div>
+				))}
+			</dl>
 		</div>
 	</section>
 
-	<div class="space-y-16 pb-20">
-		{categories.map(category => {
-			const categoryProjects = projects.filter(p => p.data.category === category.name);
-			if (categoryProjects.length === 0) return null;
-
-			return (
-				<section class="px-4 md:px-8">
-					<div class="mb-8">
-						<div class="flex items-center justify-between mb-3">
-							<h2 class={`text-2xl md:text-3xl font-bold font-display flex items-center gap-3`}>
-								<span class={`w-2 h-8 rounded-full bg-current ${category.accent}`}></span>
-								{category.name}
-							</h2>
-							<a href={`${import.meta.env.BASE_URL}directory?category=${encodeURIComponent(category.name)}`} class="text-sm text-slate-400 hover:text-white transition-colors">View All &rarr;</a>
-						</div>
-						<p class="text-slate-400 max-w-3xl ml-5 border-l-2 border-slate-700/50 pl-4 py-1 text-sm md:text-base">{category.description}</p>
+	<!-- FEATURED -->
+	<section class="mb-16">
+		<div class="flex items-end justify-between mb-6">
+			<h2 class="font-display font-black text-3xl md:text-4xl tracking-tight">Featured</h2>
+			<span class="hidden sm:block text-sm text-ink-soft">Start here</span>
+		</div>
+		<div class="grid md:grid-cols-2 gap-6">
+			{featured.map(p => p && (
+				<a href={`${base}projects/${p.id}`} class="group block rounded-2xl border-2 border-ink bg-navy text-paper p-7 md:p-9 transition-all hover:shadow-print-lg hover:-translate-y-0.5 relative overflow-hidden">
+					<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 1.5px 1.5px, #fffdf6 1.5px, transparent 0); background-size: 20px 20px;"></div>
+					<div class="relative">
+						<p class="text-chartreuse text-[11px] font-bold uppercase tracking-[0.18em] mb-3">{p.data.category}</p>
+						<h3 class="font-display font-semibold text-3xl leading-tight mb-3 group-hover:underline decoration-chartreuse decoration-2 underline-offset-4">{p.data.title}</h3>
+						<p class="text-paper/75 leading-relaxed mb-6">{p.data.description}</p>
+						<p class="text-sm text-paper/60">by <span class="text-paper font-medium">{p.data.author_name}</span> · Read more →</p>
 					</div>
-					
-					<div class="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory scrollbar-hide" style="scrollbar-width: none;">
-						{categoryProjects.map(project => (
-							<div class="snap-start flex-none w-[300px] md:w-[400px]">
-								<ProjectCard client:visible project={project} compact={false} />
-							</div>
-						))}
-					</div>
-				</section>
-			);
-		})}
-	</div>
-
-	<section class="max-w-4xl mx-auto px-4 md:px-8 pb-20 text-center">
-		<div class="p-10 md:p-16 rounded-3xl border border-indigo-500/30 bg-gradient-to-br from-indigo-900/40 to-purple-900/20 backdrop-blur-md shadow-2xl relative overflow-hidden">
-			<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
-			<div class="relative z-10">
-				<h2 class="text-3xl md:text-4xl font-bold font-display text-white mb-6">The code lives here. The community lives on Discord.</h2>
-				<p class="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-					Want to collaborate on a build, join a working group like the AI Film Club, or just talk shop? The Braintrust is always open.
-				</p>
-				<a href="https://discord.gg/vwZzFHpWQ8" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-lg transition-all hover:scale-105 shadow-[0_0_20px_rgba(88,101,242,0.4)]">
-					<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
-					Join the BC + AI Discord
 				</a>
+			))}
+		</div>
+	</section>
+
+	<!-- BROWSE BY FIELD -->
+	<section class="mb-16">
+		<h2 class="font-display font-black text-3xl md:text-4xl tracking-tight mb-6">Browse by field</h2>
+		<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+			{categories.map(c => {
+				const count = projects.filter(p => p.data.category === c.name).length;
+				return (
+					<a href={`${base}directory?category=${encodeURIComponent(c.name)}`} class="group block bg-card border-2 border-ink rounded-xl p-6 transition-all hover:shadow-print hover:-translate-y-0.5">
+						<div class="flex items-center justify-between mb-3">
+							<span class={`w-3.5 h-3.5 rounded-full border border-ink/30 ${c.dot}`}></span>
+							<span class="font-display font-black text-2xl text-ink/25 group-hover:text-ink transition-colors">{count}</span>
+						</div>
+						<h3 class={`font-display font-semibold text-xl leading-snug mb-2 ${c.text}`}>{c.name}</h3>
+						<p class="text-sm text-ink-soft leading-relaxed">{c.blurb}</p>
+					</a>
+				);
+			})}
+			<a href={`${base}add`} class="group block rounded-xl p-6 border-2 border-dashed border-ink/40 hover:border-ink transition-colors">
+				<h3 class="font-display font-semibold text-xl leading-snug mb-2">Yours goes here →</h3>
+				<p class="text-sm text-ink-soft leading-relaxed">Built something with the community? The directory is data-as-code: one Markdown file and a pull request, and you're listed.</p>
+			</a>
+		</div>
+	</section>
+
+	<!-- LATEST -->
+	<section class="mb-16">
+		<div class="flex items-end justify-between mb-6">
+			<h2 class="font-display font-black text-3xl md:text-4xl tracking-tight">Latest additions</h2>
+			<a href={`${base}directory`} class="text-sm font-semibold text-chartreuse-ink hover:underline underline-offset-4">View all →</a>
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			{latest.map(p => <ProjectCard client:visible project={p} />)}
+		</div>
+	</section>
+
+	<!-- MEETUP ARCHIVE STRIP -->
+	<section class="mb-16 rounded-3xl bg-paper-deep border-2 border-ink p-7 md:p-10">
+		<div class="flex flex-wrap items-end justify-between gap-4 mb-7">
+			<div>
+				<p class="text-[11px] font-bold uppercase tracking-[0.18em] text-cat-data mb-2">Open Data & Community Archives</p>
+				<h2 class="font-display font-black text-3xl md:text-4xl tracking-tight">From the meetup archive</h2>
+				<p class="text-ink-soft mt-2 max-w-xl">Every Vancouver AI meetup, transcribed and recapped in the open. Search two years of community discourse by speaker, theme or year.</p>
 			</div>
+			<a href={`${base}archive`} class="px-5 py-2.5 rounded-lg bg-ink text-paper font-semibold hover:bg-navy transition-colors shrink-0">Open the archive →</a>
+		</div>
+		<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+			{recentMeetups.map(m => (
+				<a href={`${base}archive`} class="block bg-card border-2 border-ink/70 rounded-xl p-5 hover:border-ink hover:shadow-print-sm transition-all">
+					<p class="text-xs font-bold uppercase tracking-widest text-cat-data">{fmtDate(m.date)}</p>
+					<h3 class="font-display font-semibold text-lg leading-snug mt-2 mb-3">{m.title}</h3>
+					<p class="text-xs text-ink-soft">{m.speakers.length} speakers · {m.transcripts.length} transcript{m.transcripts.length !== 1 ? 's' : ''}{m.recaps.length ? ` · ${m.recaps.length} recap${m.recaps.length !== 1 ? 's' : ''}` : ''}</p>
+				</a>
+			))}
+		</div>
+	</section>
+
+	<!-- HACKATHON ROSTERS -->
+	<section class="mb-16">
+		<h2 class="font-display font-black text-3xl md:text-4xl tracking-tight mb-6">Hackathon rosters</h2>
+		<div class="grid md:grid-cols-2 gap-6">
+			<a href={`${base}events/${encodeURIComponent('VanAI Hackathon Round 3')}`} class="group block bg-card border-2 border-ink rounded-xl p-7 transition-all hover:shadow-print hover:-translate-y-0.5">
+				<p class="text-[11px] font-bold uppercase tracking-[0.18em] text-cat-hack mb-2">VanAI Hackathon · Round 3</p>
+				<h3 class="font-display font-semibold text-2xl mb-2">The BC AI Survey</h3>
+				<p class="text-ink-soft text-sm leading-relaxed">1,001 British Columbians on AI: attitudes, fears and hopes, remixed into demos and provocations by community teams.</p>
+			</a>
+			<a href={`${base}events/${encodeURIComponent('VanAI Hackathon Round 4')}`} class="group block bg-card border-2 border-ink rounded-xl p-7 transition-all hover:shadow-print hover:-translate-y-0.5">
+				<p class="text-[11px] font-bold uppercase tracking-[0.18em] text-cat-hack mb-2">VanAI Hackathon · Round 4</p>
+				<h3 class="font-display font-semibold text-2xl mb-2">The Soundtrack of Us</h3>
+				<p class="text-ink-soft text-sm leading-relaxed">1,000+ listeners on music discovery and AI-generated music, turned into data art and an actual composition in E major.</p>
+			</a>
+		</div>
+	</section>
+
+	<!-- MANIFESTO -->
+	<section class="mb-16 max-w-4xl mx-auto text-center px-2">
+		<p class="font-display text-2xl md:text-[2rem] leading-snug font-semibold">
+			"We believe in DIY over gatekeepers, community before clout, and building a future where artificial intelligence serves culture, creativity, and the planet."
+		</p>
+		<p class="mt-4 text-sm uppercase tracking-widest text-ink-soft">The BC + AI way</p>
+	</section>
+
+	<!-- DISCORD CTA -->
+	<section class="rounded-3xl bg-navy-deep text-paper px-7 py-12 md:p-14 text-center border-2 border-ink shadow-print-lg relative overflow-hidden">
+		<div class="absolute inset-0 opacity-[0.12]" style="background-image: radial-gradient(circle at 2px 2px, #c9f158 1.5px, transparent 0); background-size: 24px 24px;"></div>
+		<div class="relative">
+			<h2 class="font-display font-black text-3xl md:text-4xl tracking-tight mb-4">The code lives here. The community lives on Discord.</h2>
+			<p class="text-paper/75 text-lg mb-8 max-w-2xl mx-auto">Collaborate on a build, join a working group like the AI Film Club, or just talk shop. The Braintrust is always open.</p>
+			<a href="https://discord.gg/vwZzFHpWQ8" target="_blank" rel="noopener noreferrer" class="inline-block px-8 py-3.5 rounded-lg bg-chartreuse text-ink font-bold border-2 border-chartreuse hover:bg-paper hover:border-paper transition-colors">Join the BC + AI Discord</a>
 		</div>
 	</section>
 </Layout>
-
-<style>
-	/* Hide scrollbar for Chrome, Safari and Opera */
-	.scrollbar-hide::-webkit-scrollbar {
-		display: none;
-	}
-</style>

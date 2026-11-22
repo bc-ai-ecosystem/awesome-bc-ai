@@ -1,0 +1,166 @@
+---
+import Layout from '../layouts/Layout.astro';
+import meetups from '../data/meetups.json';
+
+const sorted = [...meetups].sort((a, b) => b.date.localeCompare(a.date));
+const years = [...new Set(meetups.map(m => m.year))].sort((a, b) => b - a);
+
+const speakerCounts = new Map<string, number>();
+meetups.forEach(m => m.speakers.forEach(s => speakerCounts.set(s, (speakerCounts.get(s) ?? 0) + 1)));
+const topSpeakers = [...speakerCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14);
+
+const transcriptCount = meetups.reduce((n, m) => n + m.transcripts.length, 0);
+const recapCount = meetups.reduce((n, m) => n + m.recaps.length, 0);
+const totalAttendance = meetups.reduce((n, m) => n + (m.attendance ?? 0), 0);
+
+const fmtDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('en-CA', { month: 'long', day: 'numeric', year: 'numeric' });
+const fmtMonth = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('en-CA', { month: 'short' });
+const fmtDay = (d: string) => new Date(d + 'T12:00:00').getDate();
+---
+
+<Layout title="Meetup Archive" description="The Vancouver AI meetup archive: transcripts, recaps and speakers from the community's monthly gatherings, 2024 to today.">
+	<header class="mb-10">
+		<p class="text-[11px] font-bold uppercase tracking-[0.2em] text-cat-data mb-3">Open Data & Community Archives</p>
+		<h1 class="font-display font-black text-4xl md:text-6xl tracking-tight mb-4">The Vancouver AI Archive</h1>
+		<p class="text-lg text-ink-soft max-w-3xl leading-relaxed">
+			Every gathering of the Vancouver AI community, transcribed and recapped in the open — roughly 250,000 words of talks, panels and arguments about where AI is taking this province. Search it by speaker, theme or year; every document is one click away.
+		</p>
+		<dl class="mt-8 flex flex-wrap gap-x-10 gap-y-4">
+			<div><dd class="font-display font-black text-3xl">{meetups.length}</dd><dt class="text-xs uppercase tracking-widest text-ink-soft">gatherings</dt></div>
+			<div><dd class="font-display font-black text-3xl">{transcriptCount}</dd><dt class="text-xs uppercase tracking-widest text-ink-soft">transcripts</dt></div>
+			<div><dd class="font-display font-black text-3xl">{recapCount}</dd><dt class="text-xs uppercase tracking-widest text-ink-soft">recaps</dt></div>
+			<div><dd class="font-display font-black text-3xl">{speakerCounts.size}</dd><dt class="text-xs uppercase tracking-widest text-ink-soft">speakers</dt></div>
+			<div><dd class="font-display font-black text-3xl">{totalAttendance.toLocaleString()}+</dd><dt class="text-xs uppercase tracking-widest text-ink-soft">recorded attendance</dt></div>
+		</dl>
+	</header>
+
+	<!-- Controls -->
+	<div class="mb-4 flex flex-col lg:flex-row gap-4 lg:items-center">
+		<div class="relative flex-grow max-w-xl">
+			<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-soft">
+				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+			</div>
+			<input id="archive-search" type="text" placeholder="Search by title, speaker or venue..."
+				class="w-full bg-card border-2 border-ink/70 rounded-lg pl-9 pr-4 py-2.5 text-sm placeholder:text-ink-soft/60 focus:outline-none focus:border-ink focus:ring-2 focus:ring-chartreuse/60" />
+		</div>
+		<div class="flex gap-2" id="year-chips">
+			<button data-year="all" class="year-chip px-4 py-2 rounded-full text-sm font-semibold border-2 border-ink bg-ink text-paper transition-all">All years</button>
+			{years.map(y => (
+				<button data-year={String(y)} class="year-chip px-4 py-2 rounded-full text-sm font-semibold border-2 border-ink/25 bg-card text-ink-soft hover:border-ink hover:text-ink transition-all">{y}</button>
+			))}
+		</div>
+	</div>
+
+	<!-- Frequent voices -->
+	<div class="mb-10">
+		<p class="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-soft mb-2.5">Frequent voices — tap to filter</p>
+		<div class="flex flex-wrap gap-1.5">
+			{topSpeakers.map(([name, count]) => (
+				<button class="speaker-chip px-2.5 py-1 text-xs font-medium rounded-full border border-ink/25 bg-card text-ink-soft hover:border-ink hover:text-ink transition-colors" data-speaker={name}>
+					{name} <span class="text-ink/40">×{count}</span>
+				</button>
+			))}
+		</div>
+	</div>
+
+	<p id="archive-count" class="text-sm text-ink-soft mb-6">Showing all {sorted.length} gatherings</p>
+
+	<!-- Timeline -->
+	<div class="relative" id="timeline">
+		<div class="absolute left-[2.35rem] md:left-[3.35rem] top-0 bottom-0 w-0.5 bg-ink/15"></div>
+		<div class="space-y-6">
+			{sorted.map(m => (
+				<article class="meetup-entry relative flex gap-4 md:gap-6" data-year={String(m.year)} data-search={`${m.title} ${m.venue} ${m.speakers.join(' ')}`.toLowerCase()}>
+					<div class="relative z-10 shrink-0 w-[4.7rem] md:w-[6.7rem] flex flex-col items-center">
+						<div class="bg-ink text-paper rounded-xl w-14 h-14 md:w-16 md:h-16 flex flex-col items-center justify-center border-2 border-ink shadow-print-sm">
+							<span class="text-[10px] font-bold uppercase tracking-widest text-chartreuse leading-none">{fmtMonth(m.date)}</span>
+							<span class="font-display font-black text-xl md:text-2xl leading-none mt-0.5">{fmtDay(m.date)}</span>
+						</div>
+						<span class="text-[11px] font-semibold text-ink-soft mt-1.5">{m.year}</span>
+					</div>
+					<div class="flex-grow bg-card border-2 border-ink rounded-xl p-5 md:p-6 transition-all hover:shadow-print">
+						<div class="flex flex-wrap items-start justify-between gap-3">
+							<h2 class="font-display font-semibold text-xl md:text-2xl leading-snug max-w-xl">{m.title}</h2>
+							{m.attendance && <span class="text-xs font-bold bg-paper-deep border border-ink/20 rounded-full px-2.5 py-1 shrink-0">{m.attendance} attended</span>}
+						</div>
+						<p class="text-sm text-ink-soft mt-1.5">{fmtDate(m.date)}{m.venue && <> · {m.venue}</>}</p>
+						{m.speakers.length > 0 && (
+							<p class="text-sm mt-3 leading-relaxed"><span class="font-semibold text-ink">On stage:</span> <span class="text-ink-soft">{m.speakers.join(', ')}</span></p>
+						)}
+						<div class="flex flex-wrap gap-2 mt-4">
+							{m.transcripts.map((url, i) => (
+								<a href={url} target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 rounded-lg bg-cat-data text-white text-[13px] font-semibold hover:opacity-85 transition-opacity">Transcript{m.transcripts.length > 1 ? ` ${i + 1}` : ''} ↗</a>
+							))}
+							{m.recaps.map((url, i) => (
+								<a href={url} target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 rounded-lg border-2 border-cat-data text-cat-data text-[13px] font-semibold hover:bg-cat-data hover:text-white transition-colors">Recap{m.recaps.length > 1 ? ` ${i + 1}` : ''} ↗</a>
+							))}
+							<a href="https://github.com/bc-ai-ecosystem/vancouver-ai" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 rounded-lg text-[13px] font-medium text-ink-soft hover:text-ink transition-colors ml-auto">Archive repo ↗</a>
+						</div>
+					</div>
+				</article>
+			))}
+		</div>
+	</div>
+
+	<div id="archive-empty" class="hidden text-center py-16 border-2 border-dashed border-ink/30 rounded-xl bg-card/60 mt-6">
+		<p class="font-display text-xl text-ink-soft">Nothing in the archive matches that — yet.</p>
+		<button id="archive-clear" class="mt-4 px-5 py-2 bg-ink text-paper font-semibold rounded-lg hover:bg-navy transition-colors">Clear search</button>
+	</div>
+
+	<p class="mt-12 text-sm text-ink-soft max-w-2xl">
+		The archive is a community-maintained open dataset, designed for hacking: build semantic search over it, map the speaker network, or mine it for quotes. Source data, JSON indexes and contribution guide live in the
+		<a href="https://github.com/bc-ai-ecosystem/vancouver-ai" target="_blank" rel="noopener noreferrer" class="font-semibold text-chartreuse-ink hover:underline underline-offset-4">vancouver-ai repository</a>.
+	</p>
+</Layout>
+
+<script>
+	const searchInput = document.getElementById('archive-search') as HTMLInputElement;
+	const entries = [...document.querySelectorAll('.meetup-entry')] as HTMLElement[];
+	const countEl = document.getElementById('archive-count')!;
+	const emptyEl = document.getElementById('archive-empty')!;
+	const yearChips = [...document.querySelectorAll('.year-chip')] as HTMLButtonElement[];
+	let activeYear = 'all';
+
+	function applyFilters() {
+		const q = searchInput.value.trim().toLowerCase();
+		let shown = 0;
+		entries.forEach(e => {
+			const matchesYear = activeYear === 'all' || e.dataset.year === activeYear;
+			const matchesSearch = !q || (e.dataset.search ?? '').includes(q);
+			const show = matchesYear && matchesSearch;
+			e.style.display = show ? '' : 'none';
+			if (show) shown++;
+		});
+		countEl.textContent = shown === entries.length
+			? `Showing all ${entries.length} gatherings`
+			: `Showing ${shown} of ${entries.length} gatherings`;
+		emptyEl.classList.toggle('hidden', shown !== 0);
+	}
+
+	searchInput.addEventListener('input', applyFilters);
+
+	yearChips.forEach(chip => {
+		chip.addEventListener('click', () => {
+			activeYear = chip.dataset.year ?? 'all';
+			yearChips.forEach(c => {
+				const active = c === chip;
+				c.className = `year-chip px-4 py-2 rounded-full text-sm font-semibold border-2 transition-all ${active ? 'border-ink bg-ink text-paper' : 'border-ink/25 bg-card text-ink-soft hover:border-ink hover:text-ink'}`;
+			});
+			applyFilters();
+		});
+	});
+
+	document.querySelectorAll('.speaker-chip').forEach(chip => {
+		chip.addEventListener('click', () => {
+			const name = (chip as HTMLElement).dataset.speaker ?? '';
+			searchInput.value = searchInput.value === name ? '' : name;
+			applyFilters();
+			searchInput.focus();
+		});
+	});
+
+	document.getElementById('archive-clear')?.addEventListener('click', () => {
+		searchInput.value = '';
+		applyFilters();
+	});
+</script>

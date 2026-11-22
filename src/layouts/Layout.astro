@@ -4,29 +4,20 @@ import '../styles/global.css';
 
 interface Props {
 	title: string;
-	category?: 'Hackathons & Sprints' | 'Open Data & Community Archives' | 'Ecosystem Tooling & Infra' | 'Creative & Physical Modalities' | undefined;
+	description?: string;
+	category?: 'Hackathons & Sprints' | 'Open Data & Community Archives' | 'Ecosystem Tooling & Infra' | 'Creative & Physical Modalities' | 'Learning & Research' | undefined;
 }
 
-const { title, category } = Astro.props;
+const { title, description, category } = Astro.props;
+const base = import.meta.env.BASE_URL;
 
-let accentClass = 'border-slate-800 shadow-none';
-let textAccentClass = 'text-brand-primary';
-
-if (category === 'Hackathons & Sprints') {
-	accentClass = 'border-brand-primary shadow-[0_0_15px_rgba(163,230,53,0.3)]';
-	textAccentClass = 'text-brand-primary';
-} else if (category === 'Creative & Physical Modalities') {
-	accentClass = 'border-accent-creative shadow-[0_0_15px_rgba(6,182,212,0.3)]';
-	textAccentClass = 'text-accent-creative';
-} else if (category === 'Open Data & Community Archives') {
-	accentClass = 'border-accent-ethical shadow-[0_0_15px_rgba(16,185,129,0.3)]';
-	textAccentClass = 'text-accent-ethical';
-} else if (category === 'Ecosystem Tooling & Infra') {
-	accentClass = 'border-accent-tooling shadow-[0_0_15px_rgba(249,115,22,0.3)]';
-	textAccentClass = 'text-accent-tooling';
-}
-
-const isProjectPage = !!category;
+const catBar: Record<string, string> = {
+	'Hackathons & Sprints': 'bg-cat-hack',
+	'Open Data & Community Archives': 'bg-cat-data',
+	'Ecosystem Tooling & Infra': 'bg-cat-tool',
+	'Creative & Physical Modalities': 'bg-cat-creative',
+	'Learning & Research': 'bg-cat-learn',
+};
 ---
 
 <!doctype html>
@@ -34,51 +25,61 @@ const isProjectPage = !!category;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" href={`${import.meta.env.BASE_URL}favicon.ico`} />
+		<link rel="icon" href={`${base}favicon.ico`} />
 		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description ?? 'Awesome BC + AI — the BC + AI Ecosystem Directory. Projects, datasets, books and archives built by British Columbia\'s grassroots AI community.'} />
 		<title>{title} | Awesome BC + AI</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 		<ClientRouter />
 	</head>
-	<body class="bg-slate-900 text-slate-200 font-sans min-h-screen flex flex-col selection:bg-brand-primary selection:text-slate-900">
-		<div class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-slate-900 opacity-60"></div>
-		
-		<header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-				<a href={import.meta.env.BASE_URL} class="text-xl font-bold font-display tracking-tight flex items-center gap-2 group">
-					<span class="text-brand-primary group-hover:drop-shadow-[0_0_8px_rgba(163,230,53,0.8)] transition-all">BC + AI</span>
-					<span class="text-slate-400 font-light">Ecosystem</span>
+	<body class="min-h-screen flex flex-col selection:bg-chartreuse selection:text-ink">
+		<header class="bg-navy-deep text-paper sticky top-0 z-50 border-b-4 border-chartreuse">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+				<a href={base} class="flex items-baseline gap-2.5 shrink-0 group">
+					<span class="font-display font-black text-2xl tracking-tight text-chartreuse">BC + AI</span>
+					<span class="hidden sm:inline text-paper/70 font-light tracking-wide text-sm uppercase">Ecosystem Directory</span>
 				</a>
-				<nav class="flex items-center gap-6">
-					<a href={`${import.meta.env.BASE_URL}directory`} data-astro-reload class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Directory</a>
-					<a href={`${import.meta.env.BASE_URL}add`} data-astro-reload class="text-sm font-medium bg-brand-primary/10 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-full hover:bg-brand-primary hover:text-slate-900 transition-all shadow-[0_0_10px_rgba(163,230,53,0.1)] hover:shadow-[0_0_15px_rgba(163,230,53,0.4)]">Add Project</a>
+				<nav class="flex items-center gap-2 sm:gap-5 text-sm font-medium">
+					<a href={`${base}directory`} data-astro-reload class="text-paper/85 hover:text-chartreuse transition-colors px-1 py-1">Directory</a>
+					<a href={`${base}archive`} data-astro-reload class="text-paper/85 hover:text-chartreuse transition-colors px-1 py-1">Meetup Archive</a>
+					<a href={`${base}add`} data-astro-reload class="bg-chartreuse text-ink font-semibold px-3.5 py-1.5 rounded-full hover:bg-paper transition-colors">Add Project</a>
 				</nav>
 			</div>
+			{category && <div class={`h-1.5 ${catBar[category] ?? 'bg-chartreuse'}`}></div>}
 		</header>
 
-		<main class="flex-grow flex flex-col pt-8 pb-20">
-			<div class={`flex-grow mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${isProjectPage ? `border-t-4 transition-all duration-500 rounded-t-xl bg-slate-800/20 backdrop-blur-sm p-8 ${accentClass}` : ''}`}>
-				<slot />
-			</div>
+		<main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-24">
+			<slot />
 		</main>
 
-		<footer class="border-t border-slate-800 bg-slate-900 py-8 text-center text-slate-500 text-sm">
-			<p>A community-driven directory for the BC + AI Ecosystem.</p>
+		<footer class="bg-navy-deep text-paper/75 border-t-4 border-chartreuse">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid gap-10 md:grid-cols-3">
+				<div>
+					<p class="font-display font-black text-xl text-chartreuse mb-3">Awesome BC + AI</p>
+					<p class="text-sm leading-relaxed max-w-xs">A community-driven directory of the projects, datasets, books and archives built by British Columbia's grassroots AI collective. No gatekeepers. Just builders.</p>
+				</div>
+				<div>
+					<p class="text-xs font-semibold uppercase tracking-widest text-paper/50 mb-3">Explore</p>
+					<ul class="space-y-2 text-sm">
+						<li><a href={`${base}directory`} class="hover:text-chartreuse transition-colors">Project directory</a></li>
+						<li><a href={`${base}archive`} class="hover:text-chartreuse transition-colors">Vancouver AI meetup archive</a></li>
+						<li><a href={`${base}add`} class="hover:text-chartreuse transition-colors">Add your project</a></li>
+					</ul>
+				</div>
+				<div>
+					<p class="text-xs font-semibold uppercase tracking-widest text-paper/50 mb-3">Community</p>
+					<ul class="space-y-2 text-sm">
+						<li><a href="https://bc-ai.ca" target="_blank" rel="noopener noreferrer" class="hover:text-chartreuse transition-colors">bc-ai.ca</a></li>
+						<li><a href="https://github.com/bc-ai-ecosystem" target="_blank" rel="noopener noreferrer" class="hover:text-chartreuse transition-colors">GitHub — bc-ai-ecosystem</a></li>
+						<li><a href="https://discord.gg/vwZzFHpWQ8" target="_blank" rel="noopener noreferrer" class="hover:text-chartreuse transition-colors">Discord — the Braintrust</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="border-t border-paper/15 py-5 text-center text-xs text-paper/45">
+				Built in the open by the BC + AI community. Content lives in GitHub as Markdown — fork it, fix it, add yours.
+			</div>
 		</footer>
 	</body>
 </html>
-
-<style>
-	:root {
-		--font-sans: 'Outfit', sans-serif;
-		--font-display: 'Space Grotesk', sans-serif;
-	}
-	body {
-		font-family: var(--font-sans);
-	}
-	h1, h2, h3, h4, h5, h6, .font-display {
-		font-family: var(--font-display);
-	}
-</style>
